@@ -10,31 +10,44 @@ def load_image(name, colorkey=None):
     return image
 
 
+class Car(pygame.sprite.Sprite):
+    def __init__(self, screen2, image2, pos2):
+        super().__init__()
+        self.image = image2
+        self.pos = pos2
+        self.screen = screen2
+        self.screen.blit(self.image, self.pos)
+
+    def check(self, pos):
+        if (pos[0] >= 450 and k == 1) or pos[0] <= 0 and (k <= -1):
+            return True
+
+    def transform(self, im):
+        im2 = pygame.transform.flip(
+                image, True, False)
+        return im2
+
+
 if __name__ == '__main__':
-    image = load_image("creature.png")
+    image = load_image("car2.png")
     pygame.init()
-    pygame.display.set_caption('Свой курсор')
-    size = width, height = 300, 300
+    pygame.display.set_caption('Машинка')
+    size = width, height = 600, 95
     screen = pygame.display.set_mode(size)
     running = True
-    pos = (0, 0)
+    pos = [0, 0]
+    v = 50
+    k = 1
+    clock = pygame.time.Clock()
     while running:
         screen.fill((255, 255, 255))
-        screen.blit(image, pos)
+        car = Car(screen, image, pos)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if event.type == pygame.KEYDOWN:
-                pos = list(pos)
-                if event.key == pygame.K_LEFT:
-                    pos[0] -= 10
-                elif event.key == pygame.K_RIGHT:
-                    pos[0] += 10
-                elif event.key == pygame.K_UP:
-                    pos[1] -= 10
-                elif event.key == pygame.K_DOWN:
-                    pos[1] += 10
-                pos = tuple(pos)
-
+        if car.check(pos):
+            k *= -1
+            image = car.transform(image)
+        pos[0] += v * clock.tick() / 1000 * k
         pygame.display.flip()
     pygame.quit()
